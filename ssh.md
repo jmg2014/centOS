@@ -22,3 +22,7 @@ sudo firewall-cmd --reload
 ```sh
 sudo systemctl restart sshd.service
 ```
+## 6. Check installation
+```sh
+netstat -ntpl | grep ssh
+```
