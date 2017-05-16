@@ -76,5 +76,5 @@ sudo service firewalld restart
 ```
 •	Nexus configuration
 ```
-nexus-context-path=/nexus  in /opt/etc/nexus-default.properties”
+nexus-context-path=/nexus  in /opt/nexus/etc/nexus-default.properties”
 ```
