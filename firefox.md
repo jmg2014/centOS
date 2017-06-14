@@ -6,6 +6,12 @@ ln -sf /lib/systemd/system/runlevel5.target /etc/systemd/system/default.target
 ```
 
 
+### How to deactive virbr0?
+```
+virsh net-destroy default
+virsh net-undefine default
+```
+
 ### Check current version
 ```
 firefox -V
