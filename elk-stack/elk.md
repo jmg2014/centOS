@@ -1,6 +1,6 @@
 # ELK-STACK
 
-This is a small guide to install ELK stack (5.2.2 )in CentOS 7:
+This is a small guide to install ELK stack (5.5.0) in CentOS 7:
 * Elasticsearch
 * Logstash
 * Kibana
@@ -20,8 +20,8 @@ sudo yum install java-1.8.0-openjdk -y
 
 ## Elasticsearch
 ```sh
-curl -L -O https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-5.2.2.rpm
-sudo rpm -i elasticsearch-5.2.2.rpm
+curl -L -O https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-5.5.0.rpm
+sudo rpm -i elasticsearch-5.5.0.rpm
 sudo systemctl daemon-reload
 sudo systemctl enable elasticsearch.service
 sudo systemctl start elasticsearch.service
@@ -36,6 +36,17 @@ Update firewall
 sudo firewall-cmd --zone=public  --permanent --add-port={9200/tcp,9300/tcp}
 sudo firewall-cmd --reload
 ```
+Configuration file /etc/elasticsearch/elasticsearch.yml
+```
+cluster.name = YOUR-CLUSTER-NAME
+node.name = YOUR-NODE-NAME
+network.host= IP-SERVER
+```
+Check installation
+```
+curl http://IP-SERVER:9200
+```
+
 ## Kibana
 ```sh
 curl -L -O https://artifacts.elastic.co/downloads/kibana/kibana-5.2.2-linux-x86_64.tar.gz
@@ -91,10 +102,17 @@ sudo systemctl daemon-reload
 sudo systemctl enable kibana.service
 sudo systemctl start kibana.service
 ```
+
+configuration /etc/kiban/kibana.yml
+```
+server.host = "IP-SERVER"
+server.name = "SERVER-NAME"
+elasticsearch.url= "http://IP-SERVER:9200"
+```
 ## Logstash
 ```sh
-curl -L -O https://artifacts.elastic.co/downloads/logstash/logstash-5.2.2.rpm
-sudo rpm -i logstash-5.2.2.rpm
+curl -L -O https://artifacts.elastic.co/downloads/logstash/logstash-5.5.0.rpm
+sudo rpm -i logstash-5.5.0.rpm
 ```
 We need to create a certificate in order to use Logstash
 ```sh
