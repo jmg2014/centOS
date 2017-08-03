@@ -19,9 +19,13 @@ sudo service firewalld restart
 docker swarm init
 ```
 
-### Get token for workers
+### Get token for manager
 ```
 docker swarm join-token manager
+```
+### Get token for worker
+```
+docker swarm join-token worker
 ```
 
 ### Check nodes
