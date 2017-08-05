@@ -22,6 +22,24 @@ pip install --upgrade pip
 sudo pip install docker-compose
 ```
 
+### 4. Configure Docker to start on boot
+```
+sudo systemctl enable docker
+```
+
+### 5. Manage Docker as a non-root user
+
+To create the docker group and add your user:
+```
+sudo groupadd docker
+```
+Add your user to the docker group.
+```
+sudo usermod -aG docker $USER
+```
+Log out and log back in so that your group membership is re-evaluated.
+
+
 ### 4. Uninstall docker
 ```
  sudo yum remove docker-engine.x86_64
