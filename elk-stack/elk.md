@@ -1,6 +1,6 @@
-# ELK-STACK
+# Elastic Stack
 
-This is a small guide to install ELK stack (5.5.0) in CentOS 7:
+This is a small guide to install ELK stack (5.5.1) in CentOS 7:
 * Elasticsearch
 * Logstash
 * Kibana
@@ -20,8 +20,8 @@ sudo yum install java-1.8.0-openjdk -y
 
 ## Elasticsearch
 ```sh
-curl -L -O https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-5.5.0.rpm
-sudo rpm -i elasticsearch-5.5.0.rpm
+curl -L -O https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-5.5.1.rpm
+sudo rpm -vih elasticsearch-5.5.1.rpm
 sudo systemctl daemon-reload
 sudo systemctl enable elasticsearch.service
 sudo systemctl start elasticsearch.service
@@ -49,41 +49,12 @@ curl http://IP-SERVER:9200
 
 ## Kibana
 ```sh
-curl -L -O https://artifacts.elastic.co/downloads/kibana/kibana-5.2.2-linux-x86_64.tar.gz
-tar xzvf kibana-5.2.2-linux-x86_64.tar.gz -C /opt/
-mv kibana-5.2.2-linux-x86_64 kibana
+curl -L -O https://artifacts.elastic.co/downloads/kibana/kibana-5.5.1-x86_64.rpm
+sudo rpm -vih kibana-5.5.1-x86_64.rpm
+sudo systemctl daemon-reload
+sudo systemctl enable kibana.service
+sudo systemctl start kibana.service
 ```
-
-Run Kibana as a service
-```sh
-cd /etc/systemd/system
-vi kibana.service
-chmod +x kibana.service
-```
-Write down in the file the following:
-
-```sh
-
-[Unit]
-Description=Kibana
-After=network.target
-
-[Service]
-ExecStart=/opt/kibana/bin/kibana
-Type=simple
-PIDFile=/var/run/kibana.pid
-Restart=always
-
-[Install]
-WantedBy=default.target
-```
-
-Configure 'server.host' in kibana configuration file
-```sh
-cd /opt/kibana/config
-vi kibana.yml
-```
-
 
 Update firewall
 ```sh
@@ -96,12 +67,7 @@ Redirect port 80 to 5601
 firewall-cmd --zone=public  --permanent  --add-forward-port=port=80:proto=tcp:toport=5601
 firewall-cmd --reload
 ```
-Enable the service
-```sh
-sudo systemctl daemon-reload
-sudo systemctl enable kibana.service
-sudo systemctl start kibana.service
-```
+
 
 configuration /etc/kiban/kibana.yml
 ```
@@ -111,8 +77,8 @@ elasticsearch.url= "http://IP-SERVER:9200"
 ```
 ## Logstash
 ```sh
-curl -L -O https://artifacts.elastic.co/downloads/logstash/logstash-5.5.0.rpm
-sudo rpm -i logstash-5.5.0.rpm
+curl -L -O https://artifacts.elastic.co/downloads/logstash/logstash-5.5.1.rpm
+sudo rpm -vih logstash-5.5.1.rpm
 ```
 We need to create a certificate in order to use Logstash
 ```sh
@@ -140,14 +106,13 @@ if [type] == "syslog" {
     }
 
     date {
-match => [ "timestamp", "MMM  d HH:mm:ss", "MMM dd HH:mm:ss" ]
-}
+      match => [ "timestamp", "MMM  d HH:mm:ss", "MMM dd HH:mm:ss" ]
+    }
   }
-
 }
 output {
  elasticsearch {
-  hosts => localhost
+  hosts => ["elasticserver-ip:9200"]
     index => "%{[@metadata][beat]}-%{+YYYY.MM.dd}"
        }
 stdout {
@@ -169,4 +134,21 @@ sudo systemctl start logstash.service
 Log file:
 ```sh
 cat /var/log/logstash/logstash-plain.log
+```
+
+## X-Pack (Adding Machine learning)
+elasticsearch
+```
+cd /usr/share/elasticseach/bin/
+./elasticsearch-plugin install x-pack
+```
+kibana
+```
+cd /usr/share/kibana/bin
+./kibana-plugin install x-pack
+```
+logstash
+```
+cd /usr/share/logstash/bin
+./logstash-plugin install x-pack
 ```
